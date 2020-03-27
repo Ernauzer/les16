@@ -42,10 +42,6 @@ function editTask(editTaskObject) {
     taskItemEditSave.classList.add('save');
     taskItemEditCancel.classList.add('cancel');
 
-    // Добавили текст \\
-    // taskItemContent.innerText = editTaskObject.value;
-    taskItemEditCancel.innerText = 'Cancel';
-    taskItemEditSave.innerText = 'Save';
     // Добавили к родителю \\
     taskItem.append(taskItemEditSave);
     taskItem.append(taskItemEditCancel);
@@ -57,14 +53,8 @@ function editTask(editTaskObject) {
 
             switch (child[i].className) {
             case 'complete':
-                child[i].style.display = 'none';
-                break;
             case 'remove':
-                child[i].style.display = 'none';
-                break;
             case 'edit':
-                child[i].style.display = 'none';
-                break;
             case 'notes':
                 child[i].style.display = 'none';
                 break;
@@ -101,10 +91,18 @@ noteList.addEventListener('click', e => {
     let currentId;
     let inpEdit = noteList.querySelector('.text_edit');
     
-    // let editValue = target.parent;
-    if (targetClassName === 'remove' || targetClassName === 'complete'|| targetClassName === 'edit' || targetClassName === 'save') {
+
+    switch (targetClassName) {
+        case 'remove':
+        case 'complete':
+        case 'edit':
+        case 'save':
         currentId = element.closest('.note-list__item').getAttribute('data-id');
+        break;
+        
+        
     }
+
     switch (targetClassName) {
     case 'remove':
         noteList.innerHTML = '';
@@ -130,25 +128,23 @@ noteList.addEventListener('click', e => {
 
     case 'edit':
         taskList.forEach(task => {
-            
             value = taskList.find(task => task.id === currentId).value;
-
             noteList.prepend(editTask(task)); 
-            console.log(task);
 
         });
-        
         break;
+        
+
     case 'save':
         taskList.forEach(task => {
-                
+            console.log(task);
+            noteList.innerHTML = '';
             if (task.id === currentId) {
-                noteList.innerHTML = '';
-                task.value = inpEdit.value;
-                noteList.append(renderTask(task));
                 
+                task.value = inpEdit.value;
+                console.log(task);
             }
-            
+            noteList.append(renderTask(task));
         }
     )}
 });
