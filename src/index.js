@@ -1,7 +1,9 @@
 const input = document.querySelector('input');
 const form = document.querySelector('form');
 const noteList = document.querySelector('ul');
-let oldValue = '';
+let value = '';
+
+
 function renderTask(taskObject) {
     // Создание елементов \\
     const taskItem = document.createElement('li');
@@ -48,7 +50,7 @@ function editTask(editTaskObject) {
     taskItem.append(taskItemEditSave);
     taskItem.append(taskItemEditCancel);
     //\\
-    textEdit.value = oldValue;
+    textEdit.value = value;
     // Ф-кция удаления потомков при нажатии на Edit \\
     function delChild (child) {
         for (let i = 0; i < child.length; i++) {
@@ -97,7 +99,10 @@ noteList.addEventListener('click', e => {
     const element = e.target;
     const targetClassName = e.target.className;
     let currentId;
-    if (targetClassName === 'remove' || targetClassName === 'complete'|| targetClassName === 'edit') {
+    let inpEdit = noteList.querySelector('.text_edit');
+    
+    // let editValue = target.parent;
+    if (targetClassName === 'remove' || targetClassName === 'complete'|| targetClassName === 'edit' || targetClassName === 'save') {
         currentId = element.closest('.note-list__item').getAttribute('data-id');
     }
     switch (targetClassName) {
@@ -112,7 +117,7 @@ noteList.addEventListener('click', e => {
         break;
 
     case 'complete':
-        // Если класс совпадает то completed = true (выполнено) \\
+        // Если id совпадает то completed = true (выполнено) \\
         taskList.find(task => task.id === currentId).completed = true;
 
         noteList.innerHTML = '';
@@ -124,15 +129,26 @@ noteList.addEventListener('click', e => {
         break;
 
     case 'edit':
-        noteList.innerHTML = '';
         taskList.forEach(task => {
-            noteList.append(renderTask(task));
-            oldValue = taskList.find(task => task.id === currentId).value;
-        });
-        taskList.forEach(task => {
-            noteList.prepend(editTask(task));
-        });
-        break;
-    }
+            
+            value = taskList.find(task => task.id === currentId).value;
 
+            noteList.prepend(editTask(task)); 
+            console.log(task);
+
+        });
+        
+        break;
+    case 'save':
+        taskList.forEach(task => {
+                
+            if (task.id === currentId) {
+                noteList.innerHTML = '';
+                task.value = inpEdit.value;
+                noteList.append(renderTask(task));
+                
+            }
+            
+        }
+    )}
 });
